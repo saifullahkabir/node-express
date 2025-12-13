@@ -24,7 +24,6 @@ addRoutes("POST", "/api/users", async (req, res) => {
   const users = readUsers();
 
   const newUser = {
-    id: Date.now(),
     ...body,
   };
 
