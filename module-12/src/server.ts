@@ -124,6 +124,37 @@ app.get("/users/:id", async (req: Request, res: Response) => {
   }
 });
 
+// udate a user data in db
+app.put("/users/:id", async (req: Request, res: Response) => {
+  const { name, email } = req.body;
+  const id = req.params.id;
+  try {
+    const result = await pool.query(
+      `UPDATE users SET name=$1, email=$2 WHERE id=$3 RETURNING *`,
+      [name, email, id]
+    );
+
+    if (result.rows.length === 0) {
+      res.status(404).json({
+        success: false,
+        message: "User not found!!!",
+      });
+    } else {
+      res.status(200).json({
+        success: true,
+        message: "User updated successfully",
+        data: result.rows[0],
+      });
+    }
+  } catch (err: any) {
+    res.status(500).json({
+      success: false,
+      message: err.message,
+      details: err,
+    });
+  }
+});
+
 app.listen(port, () => {
   console.log(`hello next level developer ${port}`);
 });
