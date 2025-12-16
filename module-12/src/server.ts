@@ -155,6 +155,33 @@ app.put("/users/:id", async (req: Request, res: Response) => {
   }
 });
 
+// delete a user data in db
+app.delete("/users/:id", async (req: Request, res: Response) => {
+  try {
+    const result = await pool.query(`DELETE FROM users WHERE id = $1`, [
+      req.params.id,
+    ]);
+
+    if (result.rowCount === 0) {
+      res.status(404).json({
+        success: false,
+        message: "User not found!!!",
+      });
+    } else {
+      res.status(200).json({
+        success: true,
+        message: "User deleted successfully",
+        data: null,
+      });
+    }
+  } catch (err: any) {
+    res.status(500).json({
+      success: false,
+      message: err.message,
+    });
+  }
+});
+
 app.listen(port, () => {
   console.log(`hello next level developer ${port}`);
 });
