@@ -232,6 +232,15 @@ app.get("/todos", async (req: Request, res: Response) => {
   }
 });
 
+//* not found route
+app.use((req, res) => {
+  res.status(404).json({
+    success: false,
+    message: "Route Not Found!",
+    path: req.path,
+  });
+});
+
 app.listen(port, () => {
-  console.log(`hello next level developer ${port}`);
+  console.log(`Server listening on port ${port}`);
 });
