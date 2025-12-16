@@ -11,7 +11,7 @@ const port = 5000;
 // parser
 app.use(express.json());
 
-// Neon DB
+// DB
 const pool = new Pool({
   connectionString: `${process.env.CONNECTION_STR}`,
 });
