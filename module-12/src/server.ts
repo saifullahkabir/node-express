@@ -124,7 +124,7 @@ app.get("/users/:id", async (req: Request, res: Response) => {
   }
 });
 
-// udate a user data in db
+//* udate a user data in db
 app.put("/users/:id", async (req: Request, res: Response) => {
   const { name, email } = req.body;
   const id = req.params.id;
@@ -155,7 +155,7 @@ app.put("/users/:id", async (req: Request, res: Response) => {
   }
 });
 
-// delete a user data in db
+//* delete a user data in db
 app.delete("/users/:id", async (req: Request, res: Response) => {
   try {
     const result = await pool.query(`DELETE FROM users WHERE id = $1`, [
@@ -198,6 +198,31 @@ app.post("/todos", async (req: Request, res: Response) => {
       message: "Todo created",
       data: result.rows[0],
     });
+  } catch (err: any) {
+    res.status(500).json({
+      success: false,
+      message: err.message,
+      details: err,
+    });
+  }
+});
+
+//* get all todos data from db
+app.get("/todos", async (req: Request, res: Response) => {
+  try {
+    const result = await pool.query(`SELECT * FROM todos`);
+    if (result.rows.length === 0) {
+      res.status(404).json({
+        success: false,
+        message: "Todos not found!!!",
+      });
+    } else {
+      res.status(200).json({
+        success: true,
+        message: "Todos retrieved successfully",
+        data: result.rows,
+      });
+    }
   } catch (err: any) {
     res.status(500).json({
       success: false,
