@@ -265,6 +265,39 @@ app.get("/todos/:id", async (req: Request, res: Response) => {
   }
 });
 
+//* update a todo data in db
+app.put("/todos/:id", async (req: Request, res: Response) => {
+  const { title, completed } = req.body;
+  const id = req.params.id;
+
+  try {
+    const result = await pool.query(
+      `UPDATE todos SET title=$1, completed=$2 WHERE id=$3 RETURNING *`,
+      [title, completed, id]
+    );
+
+    console.log(result);
+
+    if (result.rows.length === 0) {
+      res.status(404).json({
+        success: false, 
+        message: "Todo not found!!!"
+      })
+    } else{
+      res.status(200).json({
+        success: true,
+        message: "Updated todo successfully",
+        data: result.rows[0],
+      });
+    }
+  } catch (err: any) {
+    res.status(500).json({
+      success: false,
+      message: err.message,
+    });
+  }
+});
+
 //* not found route
 app.use((req, res) => {
   res.status(404).json({
