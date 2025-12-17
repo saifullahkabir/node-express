@@ -238,6 +238,33 @@ app.get("/todos", async (req: Request, res: Response) => {
   }
 });
 
+//* get a specific todos data
+app.get("/todos/:id", async (req: Request, res: Response) => {
+  try {
+    const result = await pool.query(`SELECT * FROM todos WHERE id = $1`, [
+      req.params.id,
+    ]);
+
+    if (result.rows.length === 0) {
+      res.status(404).json({
+        success: false,
+        message: "Todo not found!!!",
+      });
+    } else {
+      res.status(200).json({
+        success: true,
+        message: "Single todo fetched successfully",
+        data: result.rows[0],
+      });
+    }
+  } catch (err: any) {
+    res.status(500).json({
+      success: false,
+      message: err.message,
+    });
+  }
+});
+
 //* not found route
 app.use((req, res) => {
   res.status(404).json({
