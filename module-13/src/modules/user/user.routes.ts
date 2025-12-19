@@ -10,22 +10,15 @@ const router = Router();
 router.post("/", userControllers.createUser);
 
 //* get all users data
-router.get("/", async (req: Request, res: Response) => {
-  try {
-    const result = await pool.query(`SELECT * FROM users`);
+router.get("/", userControllers.getAllUsers);
 
-    res.status(200).json({
-      success: true,
-      message: "Users retrieved successfully",
-      data: result.rows,
-    });
-  } catch (err: any) {
-    res.status(500).json({
-      success: false,
-      message: err.message,
-      details: err,
-    });
-  }
-});
+//* get a specific user data
+router.get("/:id", userControllers.getSingleUser);
+
+//* udate a user data in db
+router.put("/:id", userControllers.updateUser);
+
+//* delete a user data in db
+router.delete("/:id", userControllers.deleteUser);
 
 export const userRoutes = router;
