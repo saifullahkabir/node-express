@@ -1,18 +1,27 @@
-import { pool } from "../../config/db";
-import bcrypt from "bcryptjs";
+import { Request, Response } from "express";
+import { authServices } from "./auth.service";
 
-const loginUser = async (email: string, password: string) => {
-  const result = await pool.query(`SELECT * FROM users WHERE email=$1`, [email]);
-  if(result.rows.length === 0) {
-    return null;
+const loginUser = async (req: Request, res: Response) => {
+  const { email, password } = req.body;
+
+  try {
+    const result = await authServices.loginUser(email, password);
+
+    res.status(200).json({
+      success: true,
+      message: "Login successfully",
+      data: result,
+    });
+  } catch (err: any) {
+    res.status(500).json({
+      success: false,
+      message: err.message,
+    });
   }
-  const user = result.rows[0];
-
-  const match = await bcrypt.compare(password, user.password);
-
-  if(!match) {
-    return false;
-  }
-
-  
 };
+
+
+
+export const authControllers = {
+    loginUser,
+}
