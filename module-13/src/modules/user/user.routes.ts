@@ -10,10 +10,10 @@ const router = Router();
 router.post("/", userControllers.createUser);
 
 //* get all users data
-router.get("/", auth(), userControllers.getAllUsers);
+router.get("/", auth("admin"), userControllers.getAllUsers);
 
 //* get a specific user data
-router.get("/:id", userControllers.getSingleUser);
+router.get("/:id", auth("admin", "user"), userControllers.getSingleUser);
 
 //* udate a user data in db
 router.put("/:id", userControllers.updateUser);
